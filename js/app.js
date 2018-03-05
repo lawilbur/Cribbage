@@ -18,7 +18,7 @@ $(()=>{
     const suits = ['Spades', 'Diamonds', 'Hearts', 'Clubs'];
 
     const theCut = () =>{
-
+        console.log(deck[19].title);
     }
 
     const handToCrib = () =>{
@@ -35,6 +35,9 @@ $(()=>{
     }
 
     const createHands = () =>{
+        deck.sort((a, b)=>{
+            return 0.5 - Math.random(); //randomizes the deck
+        });
         deck.sort((a, b)=>{
             return 0.5 - Math.random(); //randomizes the deck
         });
@@ -73,6 +76,7 @@ $(()=>{
     console.log(computerhand);
     console.log(deck);
     console.log(crib);
+    theCut();
 });
 // const createDeck = () =>{
 //     for(let key in deck){

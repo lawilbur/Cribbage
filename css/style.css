@@ -1,3 +1,24 @@
+*{
+    border: 1px solid grey;
+    margin: 1px
+}
 body{
     background-color: azure;
+}
+header{
+    display: flex;
+    justify-content: center;
+}
+#deckAndBoard{
+    display: flex;
+    height: 300px;
+
+}
+#deck{
+    height: 95%;
+    width: 19%
+}
+#theBoard{
+    height: 95%;
+    width: 79%;
 }
