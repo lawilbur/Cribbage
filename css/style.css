@@ -22,6 +22,7 @@ header{
     height: 95%;
     width: 79%;
     display: flex;
+    background-color: #8a4200;
 }
 #informationSection{
     display: flex;
@@ -33,6 +34,36 @@ header{
     width: 90%;
     flex-wrap: wrap;
 }
-#scoringSection , .circle{
-    background-color: green;
+#playArea{
+    display: flex;
+    height: 300px;
+    width: 95%;
+    margin: auto;
+    background-color: pink;
+    justify-content: center;
+}
+#handArea{
+    display: flex;
+    height: 300px;
+    width: 95%;
+    margin: 1% auto;
+    background-color: orange;
+    justify-content: center;
+    align-content: baseline;
+}
+.circle{
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+    background-color: white;
+}
+.scoreMarker{
+    height: 15px;
+    width: auto;
+    color: black;
+}
+.cardDisplay{
+    background-color: white;
+    height: 200px;
+    width: auto;
 }
