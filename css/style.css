@@ -21,4 +21,18 @@ header{
 #theBoard{
     height: 95%;
     width: 79%;
+    display: flex;
+}
+#informationSection{
+    display: flex;
+    flex-direction: column;
+    width: 9%;
+}
+#scoringSection{
+    display: flex;
+    width: 90%;
+    flex-wrap: wrap;
+}
+#scoringSection , .circle{
+    background-color: green;
 }

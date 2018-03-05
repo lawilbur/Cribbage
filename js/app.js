@@ -17,6 +17,14 @@ $(()=>{
     let turn = true;
     const suits = ['Spades', 'Diamonds', 'Hearts', 'Clubs'];
 
+    const $createBoard = ()=>{
+        // const $div = $('<div>').addClass('circle');
+        for(let i = 0; i<120; i++){
+            const $div = $('<div>').addClass('circle');
+            $('#scoringSection').append($div)
+        }
+    }
+
     const theCut = () =>{
         console.log(deck[19].title);
     }
@@ -77,6 +85,7 @@ $(()=>{
     console.log(deck);
     console.log(crib);
     theCut();
+    $createBoard();
 });
 // const createDeck = () =>{
 //     for(let key in deck){
