@@ -149,30 +149,37 @@ const thePlay = (currentPlayer) =>{
         $div.append($('<h2>').text(currentPlayer[i].title));
         $('#handArea').append($div);
         let currentCard = currentPlayer[i];
+        // console.log(currentCard);
         if(player1Turn == true){ // might not be needed
             $div.on('click', (event)=>{
-                console.log('player 1')
-            console.log('Player 1 varify');
-                if(currentPlayer.length > 0){
+                console.log('player 1');
+                // console.log(currentCard.value);
+                let checkScore = checkPlayScore(player1inPlay, player2inPlay, currentCard);
+                if(checkScore == true){
+                    // checkPlayScore(player1inPlay);
                     let index = currentPlayer.indexOf(currentCard);// this is making it so you dont get unfiended when you choose the last card for the secound choice
                     $div.appendTo('#playArea');
                     player1inPlay.push(currentPlayer[index]);
                     currentPlayer.splice(index,1);
                     // $('#playArea').empty();
-                    checkPlayScore(currentPlayer);
+                    // checkPlayScore(currentPlayer);
                     $('#handArea').empty();
-                    displayHands()
+                    displayHands();
 
-                }
-                if(currentPlayer.length == 0){
+                }else if(checkScore == false){
+
                     // showEndTurnButton();
                 }
             });
         }else if (player1Turn == false) {
             $div.on('click', (event)=>{
                 console.log('player 2');
-                if(currentPlayer.length > 0){
+                // console.log(currentCard.value);
+                let checkScore = checkPlayScore(player2inPlay, player1inPlay, currentCard);
+                if(checkScore == true){
+                    // checkPlayScore(player2inPlay);
                     let index = currentPlayer.indexOf(currentCard);// this is making it so you dont get unfiended when you choose the last card for the secound choice
+                    // console.log(index);
                     $div.appendTo('#playArea');
                     player2inPlay.push(currentPlayer[index]);
                     currentPlayer.splice(index,1);
@@ -180,15 +187,53 @@ const thePlay = (currentPlayer) =>{
                     displayHands()
                 }
                 if(currentPlayer.length == 0){
-                    showEndTurnButton();
+                    // showEndTurnButton();
                 }
             });
         }
     }
 };
-const checkPlayScore = (currentPlayer) =>{
-    console.log(player1inPlay[0].value);
+
+const checkPlayScore = (currentInPlay , opponentInPlay, currentCard) =>{
+    console.log('got inside check play score');
+
+    if(opponentInPlay.length == 0){
+        return true
+    }else if(opponentInPlay.length > 0) {
+        const currentPlayerScore = returnPlayerScoreArr();
+        for(let i = 0; i < currentInPlay.length; i++){
+            console.log(currentCard.value);
+            let score = currentInPlay[i].value + opponentInPlay[i].value + currentCard.value;
+            if(score > 31){
+                alert('This card connot be played try another');
+                // let player choose new card
+            }
+            if(score == 31){
+                console.log('31 total');
+                // current player gets 2 points
+                // clear bored
+            }
+            if(score == 15){
+                console.log('made 15 add score');
+            }
+    //         if(){//if the last 2 cards are a share same tittle
+    //             //current player get 2 points
+    //         }
+    //         if () //
+    //     }
+    }
+    // return true;
 }
+}
+
+const returnPlayerScoreArr = () =>{
+    if(player1Turn === true){
+        return player1Score;
+    }else {
+        return player2Score;
+    }
+};
+
 const checkPlayerturn = () =>{
     if(player1Turn === true){
         return player1hand;
