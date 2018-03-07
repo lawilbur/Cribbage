@@ -2,13 +2,16 @@ let deck = [];
 let crib = [];
 let player1hand = [];
 let player1inPlay = [];
-let player1Score = 0;
+let player1used = [];
+let player1Score = 1;
 let player2hand = [];
 let player2inPlay = [];
-let player2Score = 0;
+let player2used = [];
+let player2Score = 2;
 let player1Turn = true;
 let isEndOfTurn = false;
 let phase = 'crib';
+let pass = false;
 const suits = ['Spades', 'Diamonds', 'Hearts', 'Clubs'];
 class Card {
     constructor(suit, value, title) {
@@ -93,9 +96,14 @@ const buildCardsForCrib = (currentPlayer) =>{
 const displayHands = () =>{ // should take the player as a parameter maybut stage as well
     const currentPlayer = checkPlayerturn();
     if(phase == 'crib'){
+        // console.log(player1Turn);
         buildCardsForCrib(currentPlayer);
     }else if(phase == 'play') {
-        // console.log('made it to the play stage');
+        // console.log(player1Turn);
+        if( player1hand.length == 0 && player2hand.length ==0){
+            console.log(player1Score);
+            console.log(player2Score);
+        }// console.log('made it to the play stage');
         thePlay(currentPlayer);
         player1Turn = !player1Turn;
     }
@@ -112,7 +120,7 @@ const theCutStage = () =>{
         }else if (checkPlayerturn() == player2hand) {
             player2Score += 2;
         }
-
+        //update score?
     }
 };
 
@@ -141,7 +149,39 @@ const endCribTurn = ()=>{
      player1Turn = !player1Turn;
      displayHands();
  };
-
+const $passButton = () =>{
+    const $button = $('<button>').text('Pass Turn').attr('id' , 'pass-button');
+    $('#playArea').append($button);
+    $button.on('click' , (event)=>{
+        if (pass == false){
+            console.log('pass false');
+            pass = true;
+            $('#handArea').empty();
+            $('#pass-button').remove();
+            // player1Turn = !player1Turn;
+            displayHands();
+    }else if(pass == true){
+        console.log(player1inPlay);
+        for(let i = 0; i <= player1inPlay.length; i++){
+            player1used.push(player1inPlay[0]);
+            player1inPlay.splice(0,1);
+            console.log(player1inPlay);
+        }
+        for(let i = 0; i <= player2inPlay.length; i++){
+            player2used.push(player2inPlay[0]);
+            player2inPlay.splice(0,1);
+            console.log(player2inPlay);
+        }
+        console.log(player1used);
+        console.log(player2used);
+        $('#playArea').empty();
+        $('#handArea').empty();
+        // player1Turn = !player1Turn;
+        pass = false;
+        displayHands();
+    }
+     });
+}
 const thePlay = (currentPlayer) =>{
     for(let i = 0; i<currentPlayer.length; i++){
         const $div = $('<div>').addClass('cardDisplay');
@@ -168,7 +208,7 @@ const thePlay = (currentPlayer) =>{
 
                 }else if(checkScore == false){
 
-                    // showEndTurnButton();
+                    // showEndTurnButton(); this may still work
                 }
             });
         }else if (player1Turn == false) {
@@ -186,56 +226,301 @@ const thePlay = (currentPlayer) =>{
                     $('#handArea').empty();
                     displayHands()
                 }
-                if(currentPlayer.length == 0){
+                else if(checkScore == false){
                     // showEndTurnButton();
                 }
             });
         }
     }
 };
+const checkPlays = () =>{
+    if(inPlay.length == 0){
+        return true;
+    }
+    if(inPlay.length == 1){
+        return true;
+    }
+    if(inPlay.length == 2){
+        check15();
+    }
+}
+const check15 = () =>{
+    let score = 0;
+    for(let i = 0; i<inPlay.length; i++){
+        score += inPlay[i].value;
+    }
+    if(score == 15){
+        currentPlayerscore += 2;
+    }
+}
+
 
 const checkPlayScore = (currentInPlay , opponentInPlay, currentCard) =>{
+    $('#pass-button').remove();
     console.log('got inside check play score');
-
+    // console.log(currentCard.value);
+    // let currentPlayerScore = returnPlayerScore();
+    // console.log(currentPlayerScore);
+    let score = 0;
     if(opponentInPlay.length == 0){
-        return true
-    }else if(opponentInPlay.length > 0) {
-        const currentPlayerScore = returnPlayerScoreArr();
-        for(let i = 0; i < currentInPlay.length; i++){
-            console.log(currentCard.value);
-            let score = currentInPlay[i].value + opponentInPlay[i].value + currentCard.value;
+        return true;
+    }
+    if(currentInPlay.length == 0){
+        console.log('inside 2 played');
+        score = opponentInPlay[0].value + currentCard.value;
+        if(score == 15){
+            console.log('made 15 add score');
+            returnPlayerScoreTest(2);
+            return true;
+        }if (opponentInPlay[0].title == currentCard.title){
+            console.log('pair was made');
+            returnPlayerScoreTest(2);
+            return true;
+        }
+        else{
+            return true;
+        }
+    }
+    if(opponentInPlay.length == 1) {
+        console.log('inside 3rd played');
+        score = (currentInPlay[0].value + opponentInPlay[0].value + currentCard.value);
+        if(pass == true){
+            score = (currentInPlay[1].value + currentInPlay[0].value + opponentInPlay[0].value + currentCard.value);
+            console.log('inside 3r pass is true');
             if(score > 31){
                 alert('This card connot be played try another');
+                $passButton();
+                // return false; //to trigger end turn play
                 // let player choose new card
             }
             if(score == 31){
                 console.log('31 total');
-                // current player gets 2 points
-                // clear bored
+                returnPlayerScoreTest(2);
+                for(let i = 0; i <= player1inPlay.length; i++){
+                    player1used.push(player1inPlay[0]);
+                    player1inPlay.splice(0,1);
+                    console.log(player1inPlay);
+                }
+                for(let i = 0; i <= player2inPlay.length; i++){
+                    player2used.push(player2inPlay[0]);
+                    player2inPlay.splice(0,1);
+                    console.log(player2inPlay);
+                }
+                $('#playArea').empty();
+                $('#handArea').empty();
+                displayHands();
+            }
+            if(currentInPlay[0].title == opponentInPlay[0].title == currentCard.title){
+                console.log('3 of a kind');
+                returnPlayerScoreTest(6);
+                return true;
+            } else if (opponentInPlay[0].title == currentCard.title){
+                console.log('pair was made');
+                returnPlayerScoreTest(2);
+                return true;
             }
             if(score == 15){
                 console.log('made 15 add score');
+                returnPlayerScoreTest(2);
+                return true;
             }
-    //         if(){//if the last 2 cards are a share same tittle
-    //             //current player get 2 points
-    //         }
-    //         if () //
-    //     }
-    }
-    // return true;
-}
-}
 
-const returnPlayerScoreArr = () =>{
-    if(player1Turn === true){
+            // else {
+            //     console.log('didnt hit an if ' + score);
+            //     return true;
+            // }
+        }else {
+            if(currentInPlay[0].title == opponentInPlay[0].title == currentCard.title){
+                console.log('3 of a kind');
+                returnPlayerScoreTest(6);
+                return true;
+            } else if (opponentInPlay[0].title == currentCard.title){
+                console.log('pair was made');
+                returnPlayerScoreTest(2);
+                return true;
+            }
+            if(score == 15){
+                console.log('made 15 add score');
+                returnPlayerScoreTest(2);
+                return true;
+            }
+            else {
+                console.log('no spoints scorred ' + score);
+                return true;
+            }
+        }
+    }
+
+    if(currentInPlay.length == 1){
+        console.log('inside 4th played');
+        if(pass == true){
+            score = (opponentInPlay[1].value + currentInPlay[0].value + opponentInPlay[0].value + currentCard.value);
+            console.log('inside 4r pass is true');
+            if(score > 31){
+                alert('This card connot be played try another');
+                $passButton();
+                // return false; //to trigger end turn play
+                // let player choose new card
+            }
+            if(score == 31){
+                console.log('31 total');
+                returnPlayerScoreTest(2);;
+                for(let i = 0; i <= player1inPlay.length; i++){
+                    player1used.push(player1inPlay[0]);
+                    player1inPlay.splice(0,1);
+                    console.log(player1inPlay);
+                }
+                for(let i = 0; i <= player2inPlay.length; i++){
+                    player2used.push(player2inPlay[0]);
+                    player2inPlay.splice(0,1);
+                    console.log(player2inPlay);
+                }
+                $('#playArea').empty();
+                $('#handArea').empty();
+                displayHands();
+            }
+            if(currentInPlay[0].title == opponentInPlay[0].title == currentCard.title){
+                console.log('3 of a kind');
+                returnPlayerScoreTest(6);
+                return true;
+            } else if (opponentInPlay[0].title == currentCard.title){
+                console.log('pair was made');
+                returnPlayerScoreTest(2);
+                return true;
+            }
+            if(score == 15){
+                console.log('made 15 add score');
+                returnPlayerScoreTest(2);
+                return true;
+            }
+        }
+        else {
+            score += (opponentInPlay[1].value + currentInPlay[0].value + opponentInPlay[0].value + currentCard.value);
+            console.log(score);
+            if(score > 31){
+                alert('This card connot be played try another');
+                $passButton();
+
+                // return false; //to trigger end turn play
+                // let player choose new card
+            }
+            if(score == 31){
+                console.log('31 total');
+                returnPlayerScoreTest(2);
+                for(let i = 0; i <= player1inPlay.length; i++){
+                    player1used.push(player1inPlay[0]);
+                    player1inPlay.splice(0,1);
+                    console.log(player1inPlay);
+                }
+                for(let i = 0; i <= player2inPlay.length; i++){
+                    player2used.push(player2inPlay[0]);
+                    player2inPlay.splice(0,1);
+                    console.log(player2inPlay);
+                }
+                $('#playArea').empty();
+                $('#handArea').empty();
+                // return true;
+                displayHands();
+            }
+            if(opponentInPlay[1].title == currentInPlay[0].title == opponentInPlay[0].title == currentCard.title){
+                    returnPlayerScoreTest(12);
+                    console.log('4 of a kind');
+
+                }else if(currentInPlay[0].title == opponentInPlay[0].title == currentCard.title){
+                    returnPlayerScoreTest(6);
+                    console.log('3 of a kind');
+
+                }else if (opponentInPlay[1].title == currentCard.title){
+                    console.log('pair was made');
+                    returnPlayerScoreTest(2);
+                    //add 2 points to current player
+
+                }
+            if(score == 15){
+                    console.log('made 15 add score');
+                    returnPlayerScoreTest(2);
+                    return true;
+            }
+
+
+        }
+        return true;
+    }
+    if(opponentInPlay.length == 2){
+            console.log('inside 5th played');
+            // if (pass == false){
+            for(let i = 0; i < 2; i++){
+                score += (opponentInPlay[i].value + currentInPlay[i].value);
+            }
+            score += currentCard.value;
+            console.log(score);
+            if(score > 31){
+                alert('This card connot be played try another');
+                $passButton();
+                // return false; //to trigger end turn play
+                // let player choose new card
+            }
+            if(score == 31){
+                console.log('31 total');
+                returnPlayerScoreTest(2);
+                for(let i = 0; i <= player1inPlay.length; i++){
+                    player1used.push(player1inPlay[0]);
+                    player1inPlay.splice(0,1);
+                    console.log(player1inPlay);
+                }
+                for(let i = 0; i <= player2inPlay.length; i++){
+                    player2used.push(player2inPlay[0]);
+                    player2inPlay.splice(0,1);
+                    console.log(player2inPlay);
+                }
+                $('#playArea').empty();
+                $('#handArea').empty();
+                displayHands();
+            }
+            if(opponentInPlay[1].title == currentInPlay[1].title == opponentInPlay[0].title == currentCard.title){
+                    returnPlayerScoreTest(12);;
+                    console.log('4 of a kind');
+
+                }else if(currentInPlay[1].title == opponentInPlay[1].title == currentCard.title){
+                    returnPlayerScoreTest(2);
+                    console.log('3 of a kind');
+
+                }else if (opponentInPlay[1].title == currentCard.title){
+                    returnPlayerScoreTest(2);
+                    console.log('pair was made');
+                    //add 2 points to current player
+
+                }
+            if(score == 15){
+                    console.log('made 15 add score');
+                    returnPlayerScoreTest(2);
+                    return true;
+            }
+        // }
+
+}
+}
+    // return true;
+
+
+
+const returnPlayerScore = () =>{
+    if(player1Turn == true){
         return player1Score;
     }else {
         return player2Score;
     }
 };
+const returnPlayerScoreTest = (num) =>{
+    if(player1Turn == true){
+        player2Score += num;
+    }else {
+        player1Score += num;
+    }
+};
 
 const checkPlayerturn = () =>{
-    if(player1Turn === true){
+    if(player1Turn == true){
         return player1hand;
     }else {
         return player2hand;
@@ -248,6 +533,7 @@ $(()=>{
     createHands();
     // console.table(deck);
     displayHands();
+
 
 
 });
