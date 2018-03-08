@@ -199,16 +199,14 @@ const endPlayTurn = () =>{
 
 const checkPair = () =>{
     let inPlayLength = inPlay.length;
-    console.log(inPlayLength);
-    if(inPlay)
-    // for(let i = 0; i<inPlay.length-1; i++) {
-    //     if(inPlayTest[i].title == inPlayTest[i+1].title == inPlayTest[i+2].title == inPlayTest[i+3].title){
-    //         console.log(inPlayTest[i]);
-    //         console.log('pair');
-    //     }else{
-    //         console.log('not pair or not working');
-    //     }
-    // }
+    if(inPlayLength > 1){
+        if(inPlay[inPlayLength-1].title == inPlay[inPlayLength-2].title){
+            console.log('its a pair!');
+            currentPlayerScore(2);
+        }
+    }else if (inPlayLength == 0){
+        return;
+    }
 }
 
 const check15 = () =>{
