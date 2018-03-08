@@ -204,7 +204,13 @@ const checkPair = () =>{
             console.log('its a pair!');
             currentPlayerScore(2);
         }
-    }else if (inPlayLength == 0){
+    }if(inPlayLength > 2){
+        if(inPlay[inPlayLength-1].title == inPlay[inPlayLength-2].title == inPlay[inPlayLength-3].title){
+            console.log('its a trippl!');
+            currentPlayerScore(6);
+        }
+    }
+    else if (inPlayLength == 0){
         return;
     }
 }
